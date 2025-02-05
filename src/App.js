@@ -6,6 +6,11 @@ import sunny from "./Assets/Sunnyimage.png"
 import tmpimage from "./Assets/Temperature.png"
 import windspeedimage from "./Assets/wind.png"
 import weatherdesc from "./Assets/weatherdesc.png"
+import clouds from "./Assets/cloudy.png";
+import rain from "./Assets/Rainy.png";
+import Thunder from "./Assets/Thunder.png";
+import snowy from "./Assets/snowy.png"
+
 
 function App() {
   const [country, setcountry] = useState('');
@@ -15,9 +20,21 @@ function App() {
   const [desc, setdesc] = useState('');
   const [srcimage, setsrcimage] = useState('');
   const [windspeed,setwindspeed]=useState('');
+  const [data,setData]=useState('');
+  const weatherimages={
+    Clear: sunny,
+    Clouds:clouds,
+    Rain:rain,
+    Snow:snowy,
+    Mist:clouds,
+    Haze:clouds,
+  };
+  const weatherimage=data.weather?weatherimages[data.weather[0].main]:Thunder;
+
   let date = new Date();
   let formattedDate = moment(date).format('MMMM Do,YYYY');
   console.log(formattedDate); // e.g., "April 6th 2022, 2:30:00 pm"
+
 
   function handleChange(event) {
     return (
@@ -28,10 +45,12 @@ function App() {
     const apicall = axios(`https://api.openweathermap.org/data/2.5/weather?q=${country}&appid=${apikeyvalue}`)
     console.log(apicall);
     apicall.then(function (success) {
+      setData(success.data)
       settemperature(success.data.main.temp);
       setweather(success.data.weather[0].main);
       setdesc(success.data.weather[0].description);
       setwindspeed(success.data.wind.speed);
+
       setTimeout(() => {
         if (weather.toLowerCase === 'clear') {
           setsrcimage(sunny)
@@ -57,12 +76,12 @@ function App() {
         <div id='weatherdata_s1'>
           <h1 className="text-3xl font-bold">{country}</h1>
           <p className="">{formattedDate}</p>
-          <img src={sunny} alt='climate change' className="md:w-40 h-40 p-5"></img>
+          <img src={weatherimage} alt='climate change' className="md:w-40 h-40 p-5"></img>
           <h1  className="text-4xl font-bold">{temperature}{`\u00B0`}C</h1>
         </div>
         <div>
           <p className="text-1xl p-0"> Weather </p>
-          <h1 id='weather_t1' className="sm:text-2xl md:text-6xl">{weather}</h1>
+          <h1 id='weather_t1' className="sm:text-2xl md:text-5xl">{weather}</h1>
         </div>
       </div>
       <div id='footer' className="flex gap-5 justify-evenly p-10 ">
