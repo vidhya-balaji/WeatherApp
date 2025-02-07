@@ -18,9 +18,11 @@ function App() {
   const [temperature, settemperature] = useState('');
   const [weather, setweather] = useState('');
   const [desc, setdesc] = useState('');
-  const [srcimage, setsrcimage] = useState('');
   const [windspeed,setwindspeed]=useState('');
   const [data,setData]=useState('');
+  const errormsg="Invalid country name";
+  const [textflag,settextflag]=useState(false);
+  const [location,setlocation]=useState('');
   const weatherimages={
     Clear: sunny,
     Clouds:clouds,
@@ -50,15 +52,10 @@ function App() {
       setweather(success.data.weather[0].main);
       setdesc(success.data.weather[0].description);
       setwindspeed(success.data.wind.speed);
-
-      setTimeout(() => {
-        if (weather.toLowerCase === 'clear') {
-          setsrcimage(sunny)
-          console.log(srcimage);
-
-        }
-      }, 2000)
-
+      setlocation(country);
+    }).catch((reject)=>{
+      settextflag(true);
+      setlocation(errormsg);
     })
   }
 
@@ -74,33 +71,33 @@ function App() {
 
       <div id='weatherdata' className="bg-white p-10">
         <div id='weatherdata_s1'>
-          <h1 className="text-3xl font-bold">{country}</h1>
+          <h1 style={{text:textflag?'red':'black'}}className="text-3xl font-bold">{location}</h1>
           <p className="">{formattedDate}</p>
-          <img src={weatherimage} alt='climate change' className="md:w-40 h-40 p-5"></img>
+          <img src={weatherimage} alt='climate change' className="sm:w-20 md:w-40 h-40 p-5"></img>
           <h1  className="text-4xl font-bold">{temperature}{`\u00B0`}C</h1>
         </div>
         <div>
-          <p className="text-1xl p-0"> Weather </p>
-          <h1 id='weather_t1' className="sm:text-2xl md:text-5xl">{weather}</h1>
+          <p id='weathertitle'className="text-1xl p-0"> Weather </p>
+          <h1 id='weather_t1' className="text-5xl">{weather}</h1>
         </div>
       </div>
-      <div id='footer' className="flex gap-5 justify-evenly p-10 ">
-        <div className="bg-[#eef2f3]  flex  gap-3 p-10 rounded-md opacity-0.5 ">
-          <img src={tmpimage} alt='temperature' className="w-8 h-8 md:w-20 md:h-20 "></img>
+      <div id='footer' className="flex flex-col md:flex md:flex-row gap-5 justify-evenly p-10 ">
+        <div id="footer_t1" className="bg-[#eef2f3]  flex  gap-3 p-10 rounded-md opacity-0.5 ">
+          <img id="footer_m1"src={tmpimage} alt='temperature' className="w-20 h-20 "></img>
           <div className="flex flex-col p-2">
             <p className="text-sm md:text-1xl">Temperature </p>
             <h1 className="text-1xl md:text-3xl font-bold">{temperature}{`\u00B0`}C</h1>
           </div>
         </div>
-        <div className="bg-[#eef2f3]  flex  gap-3 p-10 rounded-md opacity-0.5">
-          <img src={windspeedimage} alt='temperature' className="w-8 h-8 md:w-20 md:h-20 "></img>
+        <div id="footer_t2" className="bg-[#eef2f3]  flex  gap-3 p-10 rounded-md opacity-0.5">
+          <img id="footer_m2"src={windspeedimage} alt='temperature' className="w-20 h-20 "></img>
           <div className="flex flex-col p-2">
             <p className="text-sm md:text-1xl">Wind Speed </p>
             <h1 className="text-1xl md:text-3xl font-bold">{windspeed} km/h</h1>
           </div>
         </div>
-        <div className="bg-[#eef2f3]  flex  gap-3 p-10 rounded-md opacity-0.5">
-          <img src={weatherdesc} alt='temperature' className="w-8 h-8 md:w-20 md:h-20 "></img>
+        <div id="footer_t3" className="bg-[#eef2f3]  flex  gap-3 p-10 rounded-md opacity-0.5">
+          <img id="footer_m3"src={weatherdesc} alt='temperature' className="w-20 h-20 "></img>
           <div className="flex flex-col p-2">
             <p className="text-sm md:text-1xl">Description </p>
             <h1 className="text-1xl md:text-3xl font-bold">{desc}</h1>

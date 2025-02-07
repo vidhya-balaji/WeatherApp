@@ -93,3 +93,17 @@ code {
   width: 25px;
    transform: rotate(90deg);
 }
+
+@media screen and (max-width:600px)
+{
+  #weatherdata{
+    width: 70%;
+    left:20%;
+  }
+#weathertitle{
+  display: none;
+}
+#weather_t1{
+  font-size: 40px;
+}
+}
