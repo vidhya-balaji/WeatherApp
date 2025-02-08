@@ -1,6 +1,7 @@
 import axios from "axios";
-import { useState } from "react";
-import logo from "./Assets/logo.png";
+import { useEffect,useState } from "react";
+import logo from "./Assets/logo (2).svg";
+import searchicon from "./Assets/searchicon.png";
 import moment from "moment";
 import sunny from "./Assets/Sunnyimage.png"
 import tmpimage from "./Assets/Temperature.png"
@@ -13,7 +14,7 @@ import snowy from "./Assets/snowy.png"
 
 
 function App() {
-  const [country, setcountry] = useState('');
+  const [country, setcountry] = useState('Chennai');
   const apikeyvalue = '24a91a2dfa63237aa0e21c18b7a3b647';
   const [temperature, settemperature] = useState('');
   const [weather, setweather] = useState('');
@@ -33,11 +34,26 @@ function App() {
   };
   const weatherimage=data.weather?weatherimages[data.weather[0].main]:Thunder;
 
+  const backgroundimages={
+    Clear: "dognSol10 opacity",
+    Clouds:"dognSol6 opacity",
+    Rain:"dognSol23 opacity",
+    Snow:"dognSol8 opacity",
+    Mist:"dognSol opacity",
+    Haze:"dognSol15 opacity",
+  };
+  const backgroundimage=data.weather?backgroundimages[data.weather[0].main]:"dognSol10 opacity";
+
   let date = new Date();
   let formattedDate = moment(date).format('MMMM Do,YYYY');
   console.log(formattedDate); // e.g., "April 6th 2022, 2:30:00 pm"
 
 
+  useEffect(() => {
+      searchWeather();
+  }, [])
+
+  
   function handleChange(event) {
     return (
       setcountry(event.target.value)
@@ -52,21 +68,34 @@ function App() {
       setweather(success.data.weather[0].main);
       setdesc(success.data.weather[0].description);
       setwindspeed(success.data.wind.speed);
-      setlocation(country);
+      setlocation(success.data.name);
     }).catch((reject)=>{
       settextflag(true);
+      ClearState();
       setlocation(errormsg);
+      alert("Invalid country name");
     })
+  }
+
+  function ClearState(){
+    setData("")
+    settemperature("");
+    setweather("");
+    setdesc("");
+    setwindspeed("");
+    setlocation("");
   }
 
   return (
 
     <div id='container'>
+      {/* <div class="bg-img"></div> */}
+      <div className= {backgroundimage} ></div>
       <div id='header' className="bg-white justify-between w-screen bg-transparent">
-        <img src={logo} alt='logo' className="w-10 h-10"></img>
-        <h1 className="md:text-2xl font-bold text-1xl">Thunderstorm</h1>
+        <img src={logo} alt='logo' className="w-16 h-10"></img>
+        <h1 className="md:text-2xl font-bold text-1xl" id="appName">World Weather</h1>
         <input type='text' className="sm:w-72" value={country} onChange={handleChange} id='inputdata' placeholder="search for places" ></input>
-        <button className="border-black p-2" onClick={searchWeather} id='searchbutton'>Search</button>
+        <button className="border-black" onClick={searchWeather} id='searchbutton'><img src={searchicon} alt='search' className="w-10 h-10"></img></button>
       </div >
 
       <div id='weatherdata' className="bg-white p-10">
@@ -103,7 +132,7 @@ function App() {
             <h1 className="text-1xl md:text-3xl font-bold">{desc}</h1>
           </div>
         </div>
-      </div>
+      </div> 
     </div >
   );
 }
